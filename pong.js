@@ -1,15 +1,39 @@
-let table_canvas = document.getElementById('table');
-let table_context = table_canvas.getContext("2d");
-
-let player = new Paddle(15, 15, 15, 80);
-let computer = new Paddle(670, 200, 15, 80);
+let player = new Paddle(20, 200, 15, 100, 13);
+let computer = new Paddle(665, 200, 15, 100, 10);
 let ball = new Ball(250, 250, 15);
 
-function Paddle(x, y, width, height) {
+let keys = [];
+
+function step() {
+  let canvas = document.getElementById('table');
+  let ctx = canvas.getContext("2d");
+
+  canvas.width = 700;
+  canvas.height = 550;
+  prepTable(ctx);
+
+  computer.render(ctx);
+  player.render(ctx);
+  ball.render(ctx);
+
+  if (keys['ArrowDown'] && player.y < 450) {
+    player.down();
+  } else if (keys['ArrowUp'] && player.y > 0) {
+    player.up();
+  }
+
+  window.requestAnimationFrame(step);
+}
+
+let animate = window.requestAnimationFrame(step) ||
+              function(callback) { window.setTimeout(callback, 1000/60) };
+
+function Paddle(x, y, width, height, speed) {
   this.x = x;
   this.y = y;
   this.width = width;
   this.height = height;
+  this.speed = speed;
 }
 
 function Ball(x, y, radius) {
@@ -18,28 +42,37 @@ function Ball(x, y, radius) {
   this.radius = radius;
 }
 
-Paddle.prototype.render = function() {
-  table_context.fillRect(this.x, this.y, this.width, this.height);
+Paddle.prototype.render = function(ctx) {
+  ctx.fillRect(this.x, this.y, this.width, this.height);
 };
 
-Ball.prototype.render = function() {
-  table_context.beginPath();
-  table_context.arc(this.x, this.y, this.radius, Math.PI * 2, false);
-  table_context.closePath();
-  table_context.fillStyle = "#000";
-  table_context.fill();
+Paddle.prototype.up = function() {
+  this.y -= this.speed;
 }
 
-prepTable = function() {
-  table_context.moveTo(349.5, 0);
-  table_context.lineTo(349.5, 550);
-  table_context.strokeStyle = "#888";
-  table_context.stroke();
+Paddle.prototype.down = function() {
+  this.y += this.speed;
 }
 
-window.onload = function() {
-  player.render();
-  computer.render();
-  ball.render();
-  prepTable();
+Ball.prototype.render = function(ctx) {
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, this.radius, Math.PI * 2, false);
+  ctx.closePath();
+  ctx.fillStyle = "#000";
+  ctx.fill();
 }
+
+prepTable = function(ctx) {
+  ctx.moveTo(349.5, 0);
+  ctx.lineTo(349.5, 550);
+  ctx.strokeStyle = "#888";
+  ctx.stroke();
+}
+
+window.addEventListener("keydown", (e) => {
+  keys[e.key] = true;
+});
+
+window.addEventListener("keyup", (e) => {
+  keys[e.key] = false;
+});
