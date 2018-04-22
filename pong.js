@@ -1,6 +1,8 @@
 let player = new Paddle(20, 200, 15, 100, 13);
 let computer = new Paddle(765, 200, 15, 100, 4.5);
 let ball = new Ball(400, 275, 15, 0, 0);
+let playerScore = 0;
+let computerScore = 0;
 
 let keys = [];
 
@@ -36,6 +38,8 @@ function step() {
     ball.serve();
     keys[" "] = false;
   }
+
+  document.getElementById("score").innerHTML = `Player: ${playerScore} -=- Computer: ${computerScore}`
 
   window.requestAnimationFrame(step);
 }
@@ -101,13 +105,22 @@ Ball.prototype.serve = function() {
   console.log(this.velX, this.velY);
 }
 
+Ball.prototype.reset = function() {
+  this.velY = 0;
+  this.velX = 0;
+  this.x = 400;
+  this.y = 275;
+}
+
 Ball.prototype.bounce = function(canvas) {
-  if ((this.x > canvas.width - this.radius) || (this.x < 0 + this.radius)) {
-    // ball hits R/L edge, reset
-    this.velY = 0;
-    this.velX = 0;
-    this.x = 400;
-    this.y = 275;
+  if (this.x > (canvas.width - this.radius)) {
+    // player scores
+    ball.reset();
+    playerScore++;
+  } else if (this.x < 0 + this.radius) {
+    // computerScore
+    ball.reset();
+    computerScore++;
   } else if ((this.y < 0 + this.radius) || (this.y > canvas.height - this.radius)) {
     // ball hits Top/Bottom
     this.velY = this.velY * -1;
@@ -115,10 +128,9 @@ Ball.prototype.bounce = function(canvas) {
     // ball hits player
     this.velX = this.velX * -1;
     // increase ball speed if player paddle moving
-    if (keys['ArrowDown'] && player.y < 450) {
-      this.velY += 1.5;
-    } else if (keys['ArrowUp'] && player.y > 0) {
-      this.velY -= 1.5;
+    if (keys['ArrowDown'] || keys['ArrowUp']) {
+      this.velY = this.velY * 1.1;
+      this.velX = this.velX * 1.1;
     }
   } else if ((this.y >= computer.y && this.y <= (computer.y + computer.height)) && this.x >= (765 - this.radius)) {
     // ball hits computer
