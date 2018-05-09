@@ -1,3 +1,8 @@
 #table {
   background-color: #C2EDB3;
 }
+
+#score {
+  text-align: center;
+  max-width: 823px;
+}

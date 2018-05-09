@@ -3,6 +3,8 @@ let computer = new Paddle(765, 200, 15, 100, 4.5);
 let ball = new Ball(400, 275, 15, 0, 0);
 let playerScore = 0;
 let computerScore = 0;
+let score = '';
+let winningScore = 11;
 
 let keys = [];
 
@@ -13,6 +15,7 @@ function step() {
   canvas.width = 800;
   canvas.height = 550;
   prepTable(ctx);
+  scoreDisplay();
 
   computer.render(ctx);
   player.render(ctx);
@@ -39,7 +42,7 @@ function step() {
     keys[" "] = false;
   }
 
-  document.getElementById("score").innerHTML = `Player: ${playerScore} -=- Computer: ${computerScore}`
+  document.getElementById("score").innerHTML = `${score}`
 
   window.requestAnimationFrame(step);
 }
@@ -98,10 +101,15 @@ Ball.prototype.render = function(ctx) {
 }
 
 Ball.prototype.serve = function() {
+  if (playerScore === winningScore || computerScore === winningScore) {
+    playerScore = 0;
+    computerScore = 0;
+  }
+
   let xPlusMinus = Math.random() < 0.5 ? -1 : 1;
   let yPlusMinus = Math.random() < 0.5 ? -1 : 1;
-  this.velX = (3 + (5 * Math.random())) * xPlusMinus;
-  this.velY = (3 + (5 * Math.random())) * yPlusMinus;
+  this.velX = (4 + (5 * Math.random())) * xPlusMinus;
+  this.velY = (3.5 + (5 * Math.random())) * yPlusMinus;
   console.log(this.velX, this.velY);
 }
 
@@ -143,6 +151,16 @@ prepTable = function(ctx) {
   ctx.lineTo(400.5, 550);
   ctx.strokeStyle = "#888";
   ctx.stroke();
+}
+
+scoreDisplay = function() {
+  if (playerScore < winningScore && computerScore < winningScore) {
+    score = `Player: ${playerScore} -=- Computer: ${computerScore}`
+  } else if (playerScore === winningScore) {
+    score = `You won! Press SPACE to restart game`
+  } else if (computerScore === winningScore){
+    score = `You lost. Press SPACE to restart game`
+  }
 }
 
 window.addEventListener("keydown", (e) => {
