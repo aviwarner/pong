@@ -154,6 +154,7 @@ Ball.prototype.bounce = function(canvas) {
   } else if ((this.y >= player.y && this.y <= (player.y + player.height)) && this.x <= (player.width + 20 + this.radius)) {
     // ball hits player
     this.velX = this.velX * -1;
+    this.x += 10;
     // increase ball speed if player paddle moving
     if (keys['ArrowDown'] || keys['ArrowUp']) {
       this.velY = this.velY * 1.1;
@@ -163,6 +164,7 @@ Ball.prototype.bounce = function(canvas) {
   } else if ((this.y >= computer.y && this.y <= (computer.y + computer.height)) && this.x >= (765 - this.radius)) {
     // ball hits computer
     this.velX = this.velX * -1;
+    this.x -= 10;
     hit.play();
   }
 }
