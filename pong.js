@@ -11,6 +11,8 @@ let mouseY = [];
 
 let controls = 'keyboard';
 
+let hit = new Audio('/bloop.wav');
+
 function step() {
   let canvas = document.getElementById('table');
   let ctx = canvas.getContext("2d");
@@ -157,9 +159,11 @@ Ball.prototype.bounce = function(canvas) {
       this.velY = this.velY * 1.1;
       this.velX = this.velX * 1.1;
     }
+    hit.play();
   } else if ((this.y >= computer.y && this.y <= (computer.y + computer.height)) && this.x >= (765 - this.radius)) {
     // ball hits computer
     this.velX = this.velX * -1;
+    hit.play();
   }
 }
 
