@@ -11,9 +11,18 @@
 
   <body>
     <canvas id="table"></canvas>
-    <p id="score">
+    <div class="info">
+      <p id="score"></p>
 
-    </p>
+      <h3>Controls</h3>
+
+      <label class="container">Keyboard
+        <input type="radio" name="controls" id="r_keyboard" value="keyboard" checked>
+      </label>
+      <label class="container">Mouse
+        <input type="radio" name="controls" id="r_mouse" value="mouse">
+      </label>
+    </div>
     <script src="pong.js"></script>
   </body>
 </html>

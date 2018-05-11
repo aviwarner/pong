@@ -1,5 +1,5 @@
-let player = new Paddle(20, 200, 15, 100, 13);
-let computer = new Paddle(765, 200, 15, 100, 4.5);
+let player = new Paddle(20, 225, 15, 100, 13);
+let computer = new Paddle(765, 225, 15, 100, 4.5);
 let ball = new Ball(400, 275, 15, 0, 0);
 let playerScore = 0;
 let computerScore = 0;
@@ -7,6 +7,9 @@ let score = '';
 let winningScore = 11;
 
 let keys = [];
+let mouseY = [];
+
+let controls = 'keyboard';
 
 function step() {
   let canvas = document.getElementById('table');
@@ -22,10 +25,24 @@ function step() {
   ball.render(ctx);
   ball.bounce(canvas);
 
-  if (keys['ArrowDown']) {
-    player.down();
-  } else if (keys['ArrowUp']) {
-    player.up();
+  // set control scheme from radio button
+  if (document.getElementById('r_keyboard').checked) {
+    controls = 'keyboard';
+  } else {
+    controls = 'mouse';
+  }
+
+  // control by keyboard or mouse depending on selected control scheme
+  if (controls === 'keyboard') {
+    if (keys['ArrowDown']) {
+      player.down();
+    } else if (keys['ArrowUp']) {
+      player.up();
+    }
+  } else if (controls === 'mouse') {
+    if (mouseY[1] !== 0 && mouseY[0] >= 50 && mouseY[0] <= 500) {
+      player.y = mouseY[0] - 50;
+    }
   }
 
   if (ball.velX === 0) { // ball not in play, reset computer position
@@ -83,9 +100,9 @@ Paddle.prototype.down = function() {
 }
 
 Paddle.prototype.reset = function() {
-  if (this.y > 200) {
+  if (this.y > 225) {
     this.up();
-  } else if (this.y < 200) {
+  } else if (this.y < 225) {
     this.down();
   }
 }
@@ -169,4 +186,9 @@ window.addEventListener("keydown", (e) => {
 
 window.addEventListener("keyup", (e) => {
   keys[e.key] = false;
+});
+
+document.getElementById('table').addEventListener("mousemove", (e) => {
+  mouseY[0] = e.clientY;
+  mouseY[1] = e.movementY;
 });
