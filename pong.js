@@ -26,8 +26,6 @@ function step() {
 
   computer.render(ctx);
   player.render(ctx);
-  ball.render(ctx);
-  ball.bounce(canvas);
 
   // set control scheme from radio button
   if (document.getElementById('r_keyboard').checked) {
@@ -37,10 +35,15 @@ function step() {
   }
 
   if (activeGame) { // activate controls if there's an active game
+
     ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
     ctx.font = "150px monospace";
     ctx.fillText(playerScore, 150, 315);
     ctx.fillText(computerScore, 550, 315);
+
+    ball.render(ctx);
+    ball.bounce(canvas);
+
     // control by keyboard or mouse depending on selected control scheme
     if (controls === 'keyboard') {
       if (keys['ArrowDown']) {
