@@ -4,7 +4,9 @@ let ball = new Ball(400, 275, 15, 0, 0);
 let playerScore = 0;
 let computerScore = 0;
 let score = '';
-let winningScore = 11;
+let result = 'Press \'Space\' to start.';
+let winningScore = 2;
+let activeGame = false;
 
 let keys = [];
 let mouseY = [];
@@ -34,17 +36,25 @@ function step() {
     controls = 'mouse';
   }
 
-  // control by keyboard or mouse depending on selected control scheme
-  if (controls === 'keyboard') {
-    if (keys['ArrowDown']) {
-      player.down();
-    } else if (keys['ArrowUp']) {
-      player.up();
+  if (activeGame) { // activate controls if there's an active game
+    ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+    ctx.font = "150px monospace";
+    ctx.fillText(playerScore, 150, 315);
+    ctx.fillText(computerScore, 550, 315);
+    // control by keyboard or mouse depending on selected control scheme
+    if (controls === 'keyboard') {
+      if (keys['ArrowDown']) {
+        player.down();
+      } else if (keys['ArrowUp']) {
+        player.up();
+      }
+    } else if (controls === 'mouse') {
+      if (mouseY[1] !== 0 && mouseY[0] >= 50 && mouseY[0] <= 500) {
+        player.y = mouseY[0] - 50;
+      }
     }
-  } else if (controls === 'mouse') {
-    if (mouseY[1] !== 0 && mouseY[0] >= 50 && mouseY[0] <= 500) {
-      player.y = mouseY[0] - 50;
-    }
+  } else {
+    menuOverlay(ctx);
   }
 
   if (ball.velX === 0) { // ball not in play, reset computer position
@@ -59,9 +69,15 @@ function step() {
     ball = new Ball(400, 275, 15, 0, 0);
     ball.serve();
     keys[" "] = false;
+    activeGame = true;
   }
 
-  document.getElementById("score").innerHTML = `${score}`
+  if (keys["o"]) { // serve the ball when pressing space
+
+    // keys["o"] = false;
+  }
+
+  // document.getElementById("score").innerHTML = `${score}`
 
   window.requestAnimationFrame(step);
 }
@@ -83,6 +99,17 @@ function Ball(x, y, radius, velX, velY) {
   this.radius = radius;
   this.velX = velX;
   this.velY = velY;
+}
+
+menuOverlay = function(ctx) {
+  ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+  ctx.fillRect(0, 0, 800, 550);
+  ctx.textAlign = "center";
+  ctx.fillStyle = "rgba(255, 255, 255, 1)";
+  ctx.font = "60px monospace";
+  ctx.fillText("PONG", 400, 70);
+  ctx.font = "30px monospace";
+  ctx.fillText(result, 400, 140);
 }
 
 Paddle.prototype.render = function(ctx) {
@@ -180,9 +207,13 @@ scoreDisplay = function() {
   if (playerScore < winningScore && computerScore < winningScore) {
     score = `Player: ${playerScore} -=- Computer: ${computerScore}`
   } else if (playerScore === winningScore) {
-    score = `You won! Press SPACE to restart game`
+    activeGame = false;
+    player.reset();
+    result = `You won! Press SPACE to restart game`
   } else if (computerScore === winningScore){
-    score = `You lost. Press SPACE to restart game`
+    activeGame = false;
+    player.reset();
+    result = `You lost. Press SPACE to restart game`
   }
 }
 
