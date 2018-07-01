@@ -1,11 +1,11 @@
-let player = new Paddle(20, 225, 15, 100, 13);
-let computer = new Paddle(765, 225, 15, 100, 4.5);
+let player = new Paddle(20, 225, 15, 100, 14);
+let computer = new Paddle(765, 225, 15, 100, 5);
 let ball = new Ball(400, 275, 15, 0, 0);
 let playerScore = 0;
 let computerScore = 0;
 let score = '';
 let result = 'Press \'Space\' to start.';
-let winningScore = 2;
+let winningScore = 11;
 let activeGame = false;
 
 let keys = [];
@@ -73,6 +73,7 @@ function step() {
     ball.serve();
     keys[" "] = false;
     activeGame = true;
+    wawametrics.report('Ball Served')
   }
 
   if (keys["o"]) { // serve the ball when pressing space
@@ -157,8 +158,9 @@ Ball.prototype.serve = function() {
 
   let xPlusMinus = Math.random() < 0.5 ? -1 : 1;
   let yPlusMinus = Math.random() < 0.5 ? -1 : 1;
-  this.velX = (4 + (5 * Math.random())) * xPlusMinus;
-  this.velY = (3.5 + (5 * Math.random())) * yPlusMinus;
+
+  this.velX = (6 + (3 * Math.random())) * xPlusMinus;
+  this.velY = (4 + (5.5 * Math.random())) * yPlusMinus;
   console.log(this.velX, this.velY);
 }
 
@@ -232,3 +234,21 @@ document.getElementById('table').addEventListener("mousemove", (e) => {
   mouseY[0] = e.clientY;
   mouseY[1] = e.movementY;
 });
+
+var wawametrics = {};
+
+wawametrics.report = function(eventName) {
+  var event = { event: { name: eventName } };
+  var request = new XMLHttpRequest();
+  request.open("POST", "http://localhost:3000/api/events", true);
+  request.setRequestHeader('Content-Type', 'application/json');
+  console.log(event);
+  request.send(JSON.stringify(event));
+}
+
+// if ( {{ page.title }} ) {
+// 	wawametrics.report( {{ page.title }} + ' page loaded')
+// 	console.log( {{ page.title }} );
+// } else {
+// 	console.log('no page title!');
+// };
