@@ -214,10 +214,12 @@ scoreDisplay = function() {
   } else if (playerScore === winningScore) {
     activeGame = false;
     player.reset();
+    wawametrics.report('Player won');
     result = `You won! Press SPACE to restart game`
   } else if (computerScore === winningScore){
     activeGame = false;
     player.reset();
+    wawametrics.report('Player lost');
     result = `You lost. Press SPACE to restart game`
   }
 }
@@ -245,10 +247,3 @@ wawametrics.report = function(eventName) {
   console.log(event);
   request.send(JSON.stringify(event));
 }
-
-// if ( {{ page.title }} ) {
-// 	wawametrics.report( {{ page.title }} + ' page loaded')
-// 	console.log( {{ page.title }} );
-// } else {
-// 	console.log('no page title!');
-// };
