@@ -214,12 +214,10 @@ scoreDisplay = function() {
   } else if (playerScore === winningScore) {
     activeGame = false;
     player.reset();
-    wawametrics.report('Player won');
     result = `You won! Press SPACE to restart game`
   } else if (computerScore === winningScore){
     activeGame = false;
     player.reset();
-    wawametrics.report('Player lost');
     result = `You lost. Press SPACE to restart game`
   }
 }
